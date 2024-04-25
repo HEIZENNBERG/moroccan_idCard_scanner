@@ -1,20 +1,38 @@
 import cv2
 import os
+from PIL import Image, ImageEnhance
+import numpy as np
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 import easyocr
 
+
 def preprocess_image(image_path):   
     image = cv2.imread(image_path)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    
+    enhancer = ImageEnhance.Contrast(pil_image)
+    contrast_img = enhancer.enhance(1.5)
+
+    enhancer = ImageEnhance.Brightness(contrast_img)
+    bright_img = enhancer.enhance(1.2)
+
+    sharper = ImageEnhance.Sharpness(bright_img)
+    sharper_img = sharper.enhance(2)
+
+    enhanced_image = cv2.cvtColor(np.array(sharper_img), cv2.COLOR_RGB2BGR)
+    
+    gray = cv2.cvtColor(enhanced_image, cv2.COLOR_BGR2GRAY)
     binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
     blurred = cv2.GaussianBlur(binary, (5, 5), 0)
 
 
-    unsharp_mask = cv2.addWeighted(gray, 1.7, blurred, -0.5, 0)
-
+    unsharp_mask = cv2.addWeighted(gray, 2, blurred, -1, 0)
+    
     return unsharp_mask
+
 
 
 def yolo_to_pixel(image, box):
@@ -38,19 +56,34 @@ def crop_boxes(image, boxes, output_dir):
     return cropped_images
 
 
+def image_resize(image, factor):
+    height, width = image.shape[:2]
+
+    new_height = int(height * factor)
+    new_width = int(width * factor)
+
+    resized_image = cv2.resize(image, (new_width, new_height))
+    return resized_image
+
 def perform_ocr(images):
     reader = easyocr.Reader(['fr'], gpu=False)  
     ocr_results = []
     for img in images:
         result = reader.readtext(img, paragraph=True)
+        i = 2
+        while len(result) == 0:
+            resized_img = image_resize(img , i)
+            result = reader.readtext(resized_img, paragraph=True)
+            i+=1
+            
         ocr_results.append(result)
     return ocr_results
 
 
 
 def extract_from_image(image , yolo_boxes):
-    # image = preprocess_image(image)
-    image = cv2.imread(image)
+    image = preprocess_image(image)
+    # image = cv2.imread(image)
 
     pixel_boxes = [yolo_to_pixel(image, box) for box in yolo_boxes]
 

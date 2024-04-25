@@ -4,7 +4,7 @@ import data_extrator
 
 
 def transform_date(input_date):
-    input_date = input_date.replace(',', '.')
+    input_date = input_date.replace(',', '.',)
     
     try:
         date_obj = datetime.strptime(input_date, '%d.%m.%Y')
@@ -30,8 +30,6 @@ yolo_boxes = [
     (0.590317, 0.546243, 0.435754, 0.046243),
     (0.213222, 0.913295, 0.184358, 0.069364)
 ]
-
-
 
 
 results = data_extrator.extract_from_image(image_path, yolo_boxes)
