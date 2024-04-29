@@ -21,7 +21,7 @@ def transform_date(input_date):
 
 
 
-image_path = r'C:\Users\pc\Desktop\lp BigData\s6\cni-recto.jpg'
+image_path = r'C:\Users\pc\Desktop\lp BigData\s6\Image_crop.jpg'
 
 yolo_boxes = [
     (0.177232, 0.327731, 0.331250, 0.053221),

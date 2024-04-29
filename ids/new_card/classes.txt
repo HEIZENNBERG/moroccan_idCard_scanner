@@ -13,7 +13,4 @@ ribs
 pulled pork
 hamburger
 cavity
-father_name
-mother_name
-adress
-gender
+firstname
