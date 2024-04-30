@@ -2,9 +2,8 @@ import cv2
 from PIL import Image, ImageEnhance
 import numpy as np
 
-def preprocess_and_crop(image_path):
+def preprocess_and_crop(img):
     # Load the image
-    img = cv2.imread(image_path)
     
     # Enhance brightness
     pil_image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -51,12 +50,12 @@ def preprocess_and_crop(image_path):
 
 
 
-# Example usage
-image_path = r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\crop3.jpg'
-cropped_image, original_with_rect = preprocess_and_crop(image_path)
+# # Example usage
+# image_path = r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\resss.jpg'
+# cropped_image, original_with_rect = preprocess_and_crop(image_path)
 
-# Save the cropped image
-cv2.imwrite(r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\Image_crop.jpg', cropped_image)
+# # Save the cropped image
+# cv2.imwrite(r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\Image_crop.jpg', cropped_image)
 
-# Save the original image with rectangle drawn around the card
-cv2.imwrite(r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\Image_cont.jpg', original_with_rect)
+# # Save the original image with rectangle drawn around the card
+# cv2.imwrite(r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\Image_cont.jpg', original_with_rect)

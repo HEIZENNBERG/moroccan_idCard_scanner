@@ -14,6 +14,9 @@ def extract_features(image):
     keypoints, descriptors = sift.detectAndCompute(image, None)
     return keypoints, descriptors
 
+
+
+
 def match_features(descriptors1, descriptors2):
     flann = cv2.FlannBasedMatcher(dict(algorithm=1, trees=5), dict(checks=50))
     matches = flann.knnMatch(descriptors1, descriptors2, k=2)
@@ -36,7 +39,85 @@ def find_most_similar_card(input_card):
     return most_similar_card_type
 
 
-def card_type(input_card_image):
-    input_card_image = cv2.imread(r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\crop5.jpg', cv2.IMREAD_GRAYSCALE)
-    most_similar_card_type= find_most_similar_card(input_card_image)
-    return most_similar_card_type
+
+
+def detect_rotation(input_image, similar_image):
+
+    # Detect ORB keypoints and descriptors
+    orb = cv2.ORB_create()
+    kp1, des1 = orb.detectAndCompute(input_image, None)
+    kp2, des2 = orb.detectAndCompute(similar_image, None)
+
+    # Match keypoints
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    matches = bf.match(des1, des2)
+
+    # Sort matches by distance
+    matches = sorted(matches, key=lambda x: x.distance)
+
+    # Extract matched keypoints
+    src_pts = np.float32([kp1[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
+    dst_pts = np.float32([kp2[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
+
+    # Estimate perspective transformation
+    M, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC)
+
+    # Calculate rotation angle
+    rotation_angle = np.arctan2(M[1, 0], M[0, 0]) * (180 / np.pi)
+
+    return rotation_angle
+
+
+
+
+def rotate_image(image, angle):
+    # Get image dimensions
+    height, width = image.shape[:2]
+    
+    # Calculate the rotation matrix
+    rotation_matrix = cv2.getRotationMatrix2D((width/2, height/2), -angle, 1)
+    
+    # Apply the rotation to the image
+    rotated_image = cv2.warpAffine(image, rotation_matrix, (width, height))
+    
+    return rotated_image
+
+
+
+
+
+def classify(input_card_image):
+    most_similar_card_type = find_most_similar_card(input_card_image)
+
+    if most_similar_card_type == 1:
+        rotation_ref = old_front
+    elif most_similar_card_type == 2:
+        rotation_ref = old_back
+    elif most_similar_card_type == 3:
+        rotation_ref = new_front
+    else:
+        rotation_ref = new_back
+
+    # Detect rotation angle
+    rotation_angle = detect_rotation(input_card_image, rotation_ref)
+
+    # Check if rotation is necessary
+    if abs(rotation_angle) > 1.0:  # You can adjust the threshold for rotation angle
+        # Rotate the input card image
+        image_rotated = rotate_image(input_card_image, rotation_angle)
+    else:
+        image_rotated = input_card_image  # No rotation needed
+
+    return most_similar_card_type, image_rotated
+
+
+
+
+
+# # Example usage
+# input_card_image = cv2.imread(r'C:\Users\pc\Desktop\lp BigData\s6\test_crop\crop5.jpg')
+# most_similar_card_type, image_rotated = classify(input_card_image)
+
+
+
+# print("Most similar card type:", most_similar_card_type)
