@@ -8,9 +8,9 @@ import easyocr
 
 
 def preprocess_image(image_path):   
-    image = cv2.imread(image_path)
+    # image = cv2.imread(image_path)
     
-    pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    pil_image = Image.fromarray(cv2.cvtColor(image_path, cv2.COLOR_BGR2RGB))
     
     enhancer = ImageEnhance.Contrast(pil_image)
     contrast_img = enhancer.enhance(1.5)
@@ -50,7 +50,12 @@ def crop_boxes(image, boxes, output_dir):
     for i, box in enumerate(boxes):
         x_min, y_min, x_max, y_max = box
         cropped_image = image[y_min:y_max, x_min:x_max]
+
+
+        # this need to go
         output_path = os.path.join(output_dir, f"cropped_{i}.jpg")
+
+
         cv2.imwrite(output_path, cropped_image)
         cropped_images.append(cropped_image)
     return cropped_images
@@ -66,16 +71,16 @@ def image_resize(image, factor):
     return resized_image
 
 def perform_ocr(images):
-    reader = easyocr.Reader(['fr'], gpu=False)  
+    reader = easyocr.Reader(['fr'], gpu=True)  
     ocr_results = []
     for img in images:
         result = reader.readtext(img, paragraph=True)
-        i = 2
-        while len(result) == 0:
-            resized_img = image_resize(img , i)
+        
+        if len(result) == 0:
+            resized_img = image_resize(img , 2)
             result = reader.readtext(resized_img, paragraph=True)
-            i+=1
             
+
         ocr_results.append(result)
     return ocr_results
 

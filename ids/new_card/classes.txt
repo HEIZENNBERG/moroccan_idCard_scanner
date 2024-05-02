@@ -13,4 +13,13 @@ ribs
 pulled pork
 hamburger
 cavity
-firstname
+first_name
+second_name
+DOB
+COB
+CIN
+Father_name
+mother_name
+home_adress
+gender
+father_name

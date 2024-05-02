@@ -15,6 +15,10 @@ hamburger
 cavity
 first_name
 second_name
-dob
-cityOB
+DOB
+COB
 CIN
+Father_name
+mother_name
+home_adress
+gender

@@ -41,46 +41,46 @@ def find_most_similar_card(input_card):
 
 
 
-def detect_rotation(input_image, similar_image):
+# def detect_rotation(input_image, similar_image):
 
-    # Detect ORB keypoints and descriptors
-    orb = cv2.ORB_create()
-    kp1, des1 = orb.detectAndCompute(input_image, None)
-    kp2, des2 = orb.detectAndCompute(similar_image, None)
+#     # Detect ORB keypoints and descriptors
+#     orb = cv2.ORB_create()
+#     kp1, des1 = orb.detectAndCompute(input_image, None)
+#     kp2, des2 = orb.detectAndCompute(similar_image, None)
 
-    # Match keypoints
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    matches = bf.match(des1, des2)
+#     # Match keypoints
+#     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+#     matches = bf.match(des1, des2)
 
-    # Sort matches by distance
-    matches = sorted(matches, key=lambda x: x.distance)
+#     # Sort matches by distance
+#     matches = sorted(matches, key=lambda x: x.distance)
 
-    # Extract matched keypoints
-    src_pts = np.float32([kp1[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
-    dst_pts = np.float32([kp2[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
+#     # Extract matched keypoints
+#     src_pts = np.float32([kp1[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
+#     dst_pts = np.float32([kp2[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
 
-    # Estimate perspective transformation
-    M, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC)
+#     # Estimate perspective transformation
+#     M, _ = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC)
 
-    # Calculate rotation angle
-    rotation_angle = np.arctan2(M[1, 0], M[0, 0]) * (180 / np.pi)
+#     # Calculate rotation angle
+#     rotation_angle = np.arctan2(M[1, 0], M[0, 0]) * (180 / np.pi)
 
-    return rotation_angle
-
-
+#     return rotation_angle
 
 
-def rotate_image(image, angle):
-    # Get image dimensions
-    height, width = image.shape[:2]
+
+
+# def rotate_image(image, angle):
+#     # Get image dimensions
+#     height, width = image.shape[:2]
     
-    # Calculate the rotation matrix
-    rotation_matrix = cv2.getRotationMatrix2D((width/2, height/2), -angle, 1)
+#     # Calculate the rotation matrix
+#     rotation_matrix = cv2.getRotationMatrix2D((width/2, height/2), -angle, 1)
     
-    # Apply the rotation to the image
-    rotated_image = cv2.warpAffine(image, rotation_matrix, (width, height))
+#     # Apply the rotation to the image
+#     rotated_image = cv2.warpAffine(image, rotation_matrix, (width, height))
     
-    return rotated_image
+#     return rotated_image
 
 
 
@@ -89,26 +89,26 @@ def rotate_image(image, angle):
 def classify(input_card_image):
     most_similar_card_type = find_most_similar_card(input_card_image)
 
-    if most_similar_card_type == 1:
-        rotation_ref = old_front
-    elif most_similar_card_type == 2:
-        rotation_ref = old_back
-    elif most_similar_card_type == 3:
-        rotation_ref = new_front
-    else:
-        rotation_ref = new_back
+    # if most_similar_card_type == 1:
+    #     rotation_ref = old_front
+    # elif most_similar_card_type == 2:
+    #     rotation_ref = old_back
+    # elif most_similar_card_type == 3:
+    #     rotation_ref = new_front
+    # else:
+    #     rotation_ref = new_back
 
-    # Detect rotation angle
-    rotation_angle = detect_rotation(input_card_image, rotation_ref)
+    # # Detect rotation angle
+    # rotation_angle = detect_rotation(input_card_image, rotation_ref)
 
-    # Check if rotation is necessary
-    if abs(rotation_angle) > 1.0:  # You can adjust the threshold for rotation angle
-        # Rotate the input card image
-        image_rotated = rotate_image(input_card_image, rotation_angle)
-    else:
-        image_rotated = input_card_image  # No rotation needed
+    # # Check if rotation is necessary
+    # if abs(rotation_angle) > 1.0:  # You can adjust the threshold for rotation angle
+    #     # Rotate the input card image
+    #     image_rotated = rotate_image(input_card_image, rotation_angle)
+    # else:
+    #     image_rotated = input_card_image  # No rotation needed
 
-    return most_similar_card_type, image_rotated
+    return most_similar_card_type     #, image_rotated
 
 
 
