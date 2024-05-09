@@ -1,6 +1,7 @@
 {
   "name": "mobile_app",
   "version": "1.0.0",
+  "proxy":"http://10.32.103.197:5000" ,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -11,6 +12,8 @@
   "dependencies": {
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
+    "@tensorflow-models/coco-ssd": "^2.2.3",
+    "@tensorflow/tfjs": "^4.19.0",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "~50.0.17",
     "expo-camera": "~14.1.3",
