@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, Alert, Text, Image } from 'react-native';
+import { View, Button, Alert, Text, Image, StyleSheet } from 'react-native';
 import * as FileSystem from "expo-file-system";
 
 const FirstPage = ({ navigation, route }) => {
@@ -80,10 +80,17 @@ const FirstPage = ({ navigation, route }) => {
       {photoUris.map((uri, index) => (
         <Image key={index} source={{ uri: uri }} style={{ width: 200, height: 200, marginVertical: 10 }} />
       ))}
-      <Button title="Scan" onPress={handleScanPress} />
-      <Button title="Process Imgs" onPress={toServer} />
+      <Button title="Scan" onPress={handleScanPress} style={styles.button}/>
+      <Button title="Process Imgs" onPress={toServer} style={styles.button} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  button:{
+    marginBottom: 15,
+  }
+});
+
 
 export default FirstPage;

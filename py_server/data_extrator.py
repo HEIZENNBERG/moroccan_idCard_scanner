@@ -1,38 +1,10 @@
 import cv2
 import os
-from PIL import Image, ImageEnhance
+
 import numpy as np
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 import easyocr
-
-
-def preprocess_image(image_path):   
-    # image = cv2.imread(image_path)
-    
-    pil_image = Image.fromarray(cv2.cvtColor(image_path, cv2.COLOR_BGR2RGB))
-    
-    enhancer = ImageEnhance.Contrast(pil_image)
-    contrast_img = enhancer.enhance(1.5)
-
-    enhancer = ImageEnhance.Brightness(contrast_img)
-    bright_img = enhancer.enhance(1.2)
-
-    sharper = ImageEnhance.Sharpness(bright_img)
-    sharper_img = sharper.enhance(2)
-
-    enhanced_image = cv2.cvtColor(np.array(sharper_img), cv2.COLOR_RGB2BGR)
-    
-    gray = cv2.cvtColor(enhanced_image, cv2.COLOR_BGR2GRAY)
-    binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-
-    blurred = cv2.GaussianBlur(binary, (5, 5), 0)
-
-
-    unsharp_mask = cv2.addWeighted(gray, 2, blurred, -1, 0)
-    
-    return unsharp_mask
-
 
 
 def yolo_to_pixel(image, box):
@@ -87,7 +59,7 @@ def perform_ocr(images):
 
 
 def extract_from_image(image , yolo_boxes):
-    image = preprocess_image(image)
+    # image = preprocess_image(image)
     # image = cv2.imread(image)
 
     pixel_boxes = [yolo_to_pixel(image, box) for box in yolo_boxes]

@@ -60,6 +60,9 @@ const styles = StyleSheet.create({
     borderColor: 'green',
     backgroundColor: 'transparent',
   },
+  button:{
+    marginBottom: 15,
+  }
 });
 
 export default SecondPage;
