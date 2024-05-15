@@ -30,9 +30,9 @@ const SecondPage = ({ navigation }) => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Camera
-        style={{ flex: 1 }}
+        style={styles.camera}
         type={Camera.Constants.Type.back}
         ref={ref => setCameraVar(ref)}
       />
@@ -40,29 +40,38 @@ const SecondPage = ({ navigation }) => {
       <View style={styles.overlay}>
         <View style={styles.rectangle} />
       </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 20 }}>
-        <Button title="Take Picture" onPress={takePicture} />
+      <View style={styles.buttonContainer}>
+        <Button title="Take Picture" color ="rgb(71, 209, 71)" onPress={takePicture} />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  camera: {
+    flex: 1,
+  },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
   },
   rectangle: {
-    height: 200, // Adjust height as needed
-    width: 300, // Adjust width as needed
+    height: 200,
+    width: 300,
     borderWidth: 2,
     borderColor: 'green',
     backgroundColor: 'transparent',
   },
-  button:{
-    marginBottom: 15,
-  }
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
 });
 
 export default SecondPage;
