@@ -14,9 +14,9 @@ def new_back_extractor(path):
 
     data_dict = {}
 
-    data_dict['father_name'] = results[0][0][1] 
-    data_dict['mother_name'] = results[1][0][1] 
-    data_dict['adress'] = results[2][0][1] 
-    data_dict['gender'] = results[3][0][1] 
+    data_dict['father_name'] = results[0][0][1] if results[0][0][1] else 'None'
+    data_dict['mother_name'] = results[1][0][1] if results[1][0][1] else 'None'
+    data_dict['address'] = results[2][0][1] if results[2][0][1] else 'None'
+    data_dict['gender'] = results[3][0][1] if results[3][0][1] else 'None'
 
     return data_dict

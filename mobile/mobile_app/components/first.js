@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {ScrollView, View, Button, Alert, Text, Image, StyleSheet } from 'react-native';
+import { ScrollView, View, Button, Alert, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import * as FileSystem from "expo-file-system";
-import { DataTable } from 'react-native-paper'; 
-
+import { DataTable } from 'react-native-paper';
 
 const FirstPage = ({ navigation, route }) => {
   const [photoUris, setPhotoUris] = useState([null, null]); // Two URI slots
+  const [loading, setLoading] = useState(false); // State variable for loading indicator
+  const [results, setResults] = useState(null); 
 
   // Extract the photoUri parameter from the route if available
   const { photoUri } = route.params || {};
@@ -74,22 +75,25 @@ const FirstPage = ({ navigation, route }) => {
         },
         body: JSON.stringify({ images: validBase64Images }), // Sending an array of base64 images
       });
-      console.log(await response.json());
+      const responseData = await response.json();
+      setResults(responseData.results); // Update state with received results
     } catch (error) {
       console.error("Error sending images to server:", error);
+    } finally {
+      setLoading(false); // Hide the loader
     }
   };
 
   return (
-    <ScrollView style={{ flex:1}}>
+    <ScrollView style={{ flex: 1 }}>
       <View style={styles.container}>
-
         <View style={styles.scannerContainer}>
           <View style={styles.imageContainer}>
-            <Image source={{ uri: photoUris[0] }} 
-                  style={[styles.image, {marginRight: 10}]} />
+            <Image source={{ uri: photoUris[0] }}
+              style={[styles.image, { marginRight: 10 }]} />
             <Image source={{ uri: photoUris[1] }} style={styles.image} />
           </View>
+
 
           <View style={styles.buttonContainer}>
             <View style={{marginLeft : 20}}>
@@ -100,52 +104,25 @@ const FirstPage = ({ navigation, route }) => {
             </View>
           </View>
           <Button title="Process Imgs" titleStyle={{color : "black"}} onPress={toServer} color ="rgb(71, 209, 71)" style={styles.button} />
-        
-        <View style={styles.tableContainer}>
-            <DataTable style={styles.table}> 
-              <DataTable.Header style={styles.tableHeader}> 
-                <DataTable.Title>feild</DataTable.Title> 
-                <DataTable.Title>value</DataTable.Title> 
-
-              </DataTable.Header> 
-              <DataTable.Row style={styles.row}> 
-                <DataTable.Cell>first Name</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row> 
-              <DataTable.Row> 
-                <DataTable.Cell>Second Name</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row>
-              <DataTable.Row style={styles.row}> 
-                <DataTable.Cell>Day of Birth</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row>
-              <DataTable.Row> 
-                <DataTable.Cell>City of Birth</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row> 
-              <DataTable.Row style={styles.row}> 
-                <DataTable.Cell>CIN</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row>
-              <DataTable.Row> 
-                <DataTable.Cell>Father Name</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row>
-              <DataTable.Row style={styles.row}> 
-                <DataTable.Cell>Mother Name</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row>    
-              <DataTable.Row> 
-                <DataTable.Cell>Home Adress</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row> 
-              <DataTable.Row style={styles.row}> 
-                <DataTable.Cell>gender</DataTable.Cell> 
-                <DataTable.Cell>Dosa</DataTable.Cell> 
-              </DataTable.Row>       
-            </DataTable> 
-          </View>
+          
+            {results && (
+              <View style={styles.tableContainer}>
+                <DataTable style={styles.table}>
+                  <DataTable.Header style={styles.tableHeader}>
+                    <DataTable.Title>Field</DataTable.Title>
+                    <DataTable.Title>Value</DataTable.Title>
+                  </DataTable.Header>
+                  {results.map((result, resultIndex) => (
+                    Object.entries(result).map(([key, value], entryIndex) => (
+                      <DataTable.Row key={`${resultIndex}-${entryIndex}`} style={styles.row}>
+                        <DataTable.Cell>{key}</DataTable.Cell>
+                        <DataTable.Cell>{value}</DataTable.Cell>
+                      </DataTable.Row>
+                    ))
+                  ))}
+                </DataTable>
+              </View>
+            )}
           <Button title="Save informations" titleStyle={{color : "black"}}  color ="rgb(71, 209, 71)" style={[styles.button, {Bottom: 20}]} />
 
         </View>

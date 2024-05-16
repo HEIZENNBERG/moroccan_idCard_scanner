@@ -6,18 +6,18 @@ import cv2
 import new_back_cin, new_front_cin, old_back_cin, old_front_cin, card_type,  crop
 
 def CIN_Reader(image):
-
-    img_type = card_type.classify(image)
     cropped_image = crop.crop(image)
+    img_type, processed_images=  card_type.classify(cropped_image)
+    
 
     if img_type == 1:
-        dict_res = old_front_cin.old_front_extractor(cropped_image)
+        dict_res = old_front_cin.old_front_extractor(processed_images)
     elif img_type == 2:
-        dict_res = old_back_cin.old_back_extractor(cropped_image)
+        dict_res = old_back_cin.old_back_extractor(processed_images)
     elif img_type == 3:
-        dict_res = new_front_cin.new_front_extractor(cropped_image)
+        dict_res = new_front_cin.new_front_extractor(processed_images)
     else:
-        dict_res = new_back_cin.new_back_extractor(cropped_image)
+        dict_res = new_back_cin.new_back_extractor(processed_images)
 
     return dict_res
 

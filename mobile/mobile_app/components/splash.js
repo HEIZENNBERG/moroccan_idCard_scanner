@@ -9,7 +9,7 @@ const SplashScreen = ({ navigation }) => {
     setTimeout(() => {
       // Navigate to the main screen
       navigation.navigate('FirstPage');
-    }, 1); // 3000 milliseconds (3 seconds) delay
+    }, 3000); // 3000 milliseconds (3 seconds) delay
   }, []);
 
   return (
