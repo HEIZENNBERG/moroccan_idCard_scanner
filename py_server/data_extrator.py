@@ -16,6 +16,12 @@ def yolo_to_pixel(image, box):
     y_max = int((y_center + height / 2) * image_height)
     return (x_min, y_min, x_max, y_max)
 
+def safe_get(results, outer_index, inner_index):
+    try:
+        return results[outer_index][-1][inner_index]
+    except (IndexError, KeyError):
+        return "no text detected"
+
 
 def crop_boxes(image, boxes, output_dir):
     cropped_images = []

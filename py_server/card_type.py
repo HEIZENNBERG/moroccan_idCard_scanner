@@ -21,24 +21,24 @@ def preprocess_image(image_path):
     pil_image = Image.fromarray(cv2.cvtColor(image_path, cv2.COLOR_BGR2RGB))
     
     enhancer = ImageEnhance.Contrast(pil_image)
-    contrast_img = enhancer.enhance(1.3)
+    contrast_img = enhancer.enhance(1.5)
 
     enhancer = ImageEnhance.Brightness(contrast_img)
-    bright_img = enhancer.enhance(1.5)
+    bright_img = enhancer.enhance(1.8)
 
     sharper = ImageEnhance.Sharpness(bright_img)
     sharper_img = sharper.enhance(1.5)
 
     enhanced_image = cv2.cvtColor(np.array(sharper_img), cv2.COLOR_RGB2BGR)
     
-    gray = cv2.cvtColor(enhanced_image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(image_path, cv2.COLOR_BGR2GRAY)
     binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
     blurred = cv2.GaussianBlur(binary, (5, 5), 0)
 
 
     unsharp_mask = cv2.addWeighted(gray, 2, blurred, -1, 0)
-    cv2.imwrite('test.jpg', unsharp_mask)
+    # cv2.imwrite('test.jpg', unsharp_mask)
     return unsharp_mask
 
 
@@ -68,7 +68,6 @@ def find_most_similar_card(input_card):
 def classify(input_card_image):
     processed_image = preprocess_image(input_card_image)
     most_similar_card_type = find_most_similar_card(input_card_image)
-    cv2.imwrite('processed.jpg', processed_image)
     return most_similar_card_type , processed_image  
 
 

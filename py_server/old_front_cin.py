@@ -33,13 +33,15 @@ def old_front_extractor(image_path):
 
     data_dict = {}
 
-    data_dict['firstName'] = results[0][0][1] 
-    data_dict['secondName'] = results[1][0][1] 
-    data_dict['DOB'] = results[2][0][1] 
-    data_dict['COB'] = results[3][0][1] 
-    data_dict['CIN'] = results[4][0][1] 
-
-    data_dict['DOB'] = transform_date(data_dict['DOB'])
+    data_dict['firstName'] = data_extrator.safe_get(results, 0, 1)
+    data_dict['secondName'] = data_extrator.safe_get(results, 1, 1) 
+    data_dict['COB'] = data_extrator.safe_get(results, 3, 1) 
+    data_dict['CIN'] =data_extrator.safe_get(results, 4, 1)
+    
+    if data_extrator.safe_get(results, 2, 1) is not None:
+        data_dict['DOB'] = transform_date(data_extrator.safe_get(results, 2, 1))
+    else:
+        data_dict['DOB'] = None
 
     return data_dict
 

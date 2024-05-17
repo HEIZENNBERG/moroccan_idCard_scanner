@@ -8,7 +8,8 @@ import new_back_cin, new_front_cin, old_back_cin, old_front_cin, card_type,  cro
 def CIN_Reader(image):
     cropped_image = crop.crop(image)
     img_type, processed_images=  card_type.classify(cropped_image)
-    
+    cv2.imwrite('cerped.jpg', cropped_image)
+
 
     if img_type == 1:
         dict_res = old_front_cin.old_front_extractor(processed_images)

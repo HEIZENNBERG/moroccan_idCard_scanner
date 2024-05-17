@@ -22,26 +22,25 @@ def transform_date(input_date):
 def new_front_extractor(image_path):
 
     yolo_boxes = [
-        (0.566990, 0.261682, 0.431068, 0.099688),
-        (0.577670, 0.355140, 0.452427, 0.068536),
-        (0.666990, 0.423676, 0.180583, 0.093458),
-        (0.592233, 0.531153, 0.415534, 0.102804),
-        (0.196117, 0.939252, 0.213592, 0.121495)
+        (0.558591, 0.265587, 0.362849, 0.098411),
+        (0.543896, 0.357274, 0.331952, 0.084963),
+        (0.663338, 0.435819, 0.213640, 0.072127),
+        (0.606820, 0.546760, 0.457046, 0.100856),
+        (0.221929, 0.912592, 0.200452, 0.174817)
     ]
-
-
-
 
     results = data_extrator.extract_from_image(image_path, yolo_boxes)
 
     data_dict = {}
 
-    data_dict['firstName'] = results[0][0][1] 
-    data_dict['secondName'] = results[1][0][1] 
-    data_dict['DOB'] = results[2][0][1] 
-    data_dict['COB'] = results[3][0][1] 
-    data_dict['CIN'] = results[4][0][1] 
+    data_dict['firstName'] = data_extrator.safe_get(results, 0, 1)
+    data_dict['secondName'] = data_extrator.safe_get(results,1 , 1)
+    data_dict['COB'] = data_extrator.safe_get(results, 3, 1)
+    data_dict['CIN'] = data_extrator.safe_get(results, 4, 1) 
 
-    data_dict['DOB'] = transform_date(data_dict['DOB'])
+    if data_extrator.safe_get(results, 2, 1) is not None:
+        data_dict['DOB'] = transform_date(data_extrator.safe_get(results, 2, 1))
+    else:
+        data_dict['DOB'] = data_extrator.safe_get(results, 2, 1)
 
     return data_dict
