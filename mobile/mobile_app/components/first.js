@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, View, Button, Alert, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from "expo-file-system";
 import { DataTable } from 'react-native-paper';
 import { firebase, firestore } from './firebase';
@@ -8,8 +9,6 @@ const FirstPage = ({ navigation, route }) => {
   const [photoUris, setPhotoUris] = useState([null, null]);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
-
-  const { photoUri } = route.params || {};
 
   const uriToBase64 = async (uri) => {
     try {
@@ -23,24 +22,30 @@ const FirstPage = ({ navigation, route }) => {
     }
   };
 
-  useEffect(() => {
-    if (photoUri) {
-      setPhotoUris(prevUris => {
-        const updatedUris = [...prevUris];
-        const index = updatedUris.findIndex(uri => uri === null);
-        if (index !== -1) {
-          updatedUris[index] = photoUri;
-        }
-        return updatedUris;
-      });
-    }
-  }, [photoUri]);
-
-  const handleScanPress = () => {
+  const handleScanPress = async () => {
     if (photoUris.every(uri => uri !== null)) {
       Alert.alert('Maximum Photos Reached', 'You can only store up to 2 photos.');
     } else {
-      navigation.navigate('SecondPage');
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log("ImagePicker result:", result);
+
+      if (!result.cancelled && result.assets && result.assets.length > 0) {
+        const uri = result.assets[0].uri;
+        setPhotoUris(prevUris => {
+          const updatedUris = [...prevUris];
+          const index = updatedUris.findIndex(uri => uri === null);
+          if (index !== -1) {
+            updatedUris[index] = uri;
+          }
+          console.log("Updated URIs:", updatedUris);
+          return updatedUris;
+        });
+      }
     }
   };
 
@@ -52,7 +57,7 @@ const FirstPage = ({ navigation, route }) => {
   const toServer = async () => {
     setLoading(true);
     const schema = "http://";
-    const host = "10.32.103.197";
+    const host = "192.168.43.107";
     const route = "/image";
     const port = "5000";
     const url = `${schema}${host}:${port}${route}`;
@@ -103,8 +108,16 @@ const FirstPage = ({ navigation, route }) => {
       <View style={styles.container}>
         <View style={styles.scannerContainer}>
           <View style={styles.imageContainer}>
-            <Image source={{ uri: photoUris[0] }} style={[styles.image, { marginRight: 10 }]} />
-            <Image source={{ uri: photoUris[1] }} style={styles.image} />
+            {photoUris[0] ? (
+              <Image source={{ uri: photoUris[0] }} style={[styles.image, { marginRight: 10 }]} />
+            ) : (
+              <View style={[styles.image, { marginRight: 10, backgroundColor: 'grey' }]} />
+            )}
+            {photoUris[1] ? (
+              <Image source={{ uri: photoUris[1] }} style={styles.image} />
+            ) : (
+              <View style={[styles.image, { backgroundColor: 'grey' }]} />
+            )}
           </View>
 
           <View style={styles.buttonContainer}>
@@ -170,6 +183,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 180,
     borderRadius: 10,
+    backgroundColor:'white'
   },
   tableContainer: {
     marginTop: 20,

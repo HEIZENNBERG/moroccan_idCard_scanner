@@ -11,9 +11,7 @@ new_back = cv2.imread(r'C:\Users\pc\Desktop\lp BigData\s6\card_references\new_ba
 # Initialize SIFT detector
 sift = cv2.SIFT_create()
 
-def extract_features(image):
-    keypoints, descriptors = sift.detectAndCompute(image, None)
-    return keypoints, descriptors
+
 
 def preprocess_image(image_path):   
     # image = cv2.imread(image_path)
@@ -41,6 +39,12 @@ def preprocess_image(image_path):
     # cv2.imwrite('test.jpg', unsharp_mask)
     return unsharp_mask
 
+
+
+
+def extract_features(image):
+    keypoints, descriptors = sift.detectAndCompute(image, None)
+    return keypoints, descriptors
 
 def match_features(descriptors1, descriptors2):
     flann = cv2.FlannBasedMatcher(dict(algorithm=1, trees=5), dict(checks=50))
