@@ -24,7 +24,7 @@ const SplashScreen = ({ navigation }) => {
       />
       {/* Use the system font with fontStyle: 'italic' for math italic style */}
       <Text style={[styles.title, {fontStyle: 'italic'}]}>
-        Moroccan card-Id Scanner
+      Moroccan Id-Card Reader
       </Text>
     </View>
   );
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     height: 100,
     position: 'absolute',
     top: 20,
-    left: 20,
+    borderRadius:10
   },
   splash: {
     width: 250,

@@ -21,12 +21,14 @@ def transform_date(input_date):
 
 def old_front_extractor(image_path):
     yolo_boxes = [
-        (0.210268, 0.329132, 0.408036, 0.126050),
-        (0.217411, 0.454482, 0.433036, 0.096639),
-        (0.321429, 0.537115, 0.201786, 0.102241),
-        (0.268585, 0.622174, 0.439192, 0.067815),
-        (0.829464, 0.807423, 0.221429, 0.110644)
+        (0.260700, 0.336825, 0.516537, 0.149879),
+        (0.210846, 0.456487, 0.417802, 0.094279),
+        (0.330739, 0.540693, 0.231518, 0.117647),
+        (0.255107, 0.657131, 0.509241, 0.081386),
+        (0.773833, 0.812248, 0.195525, 0.209508)
     ]
+
+
 
 
     results = data_extrator.extract_from_image(image_path, yolo_boxes)
@@ -35,7 +37,7 @@ def old_front_extractor(image_path):
 
     data_dict['firstName'] = data_extrator.safe_get(results, 0, 1)
     data_dict['secondName'] = data_extrator.safe_get(results, 1, 1) 
-    data_dict['COB'] = data_extrator.safe_get(results, 3, 1) 
+    data_dict['COB'] = data_extrator.safe_get(results, 3, 1).replace("à", "").strip()
     data_dict['CIN'] =data_extrator.safe_get(results, 4, 1)
     
     if data_extrator.safe_get(results, 2, 1) is not None:

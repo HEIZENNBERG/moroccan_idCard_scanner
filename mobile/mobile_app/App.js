@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import FirstPage from './components/first';
@@ -9,12 +10,15 @@ const Stack = createStackNavigator();
 const App = () => {
 
   return (
+    <>
+    <StatusBar hidden={false} />
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="s" component={SplashScreen} />
-        <Stack.Screen name="FirstPage" component={FirstPage} />
+        <Stack.Screen name="s" component={SplashScreen}  options={{ headerShown: false }}/>
+        <Stack.Screen name="FirstPage" component={FirstPage}  options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
+    </>
   );
 };
 
