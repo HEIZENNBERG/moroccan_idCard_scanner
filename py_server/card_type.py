@@ -22,21 +22,21 @@ def preprocess_image(image_path):
     contrast_img = enhancer.enhance(1.5)
 
     enhancer = ImageEnhance.Brightness(contrast_img)
-    bright_img = enhancer.enhance(1.8)
+    bright_img = enhancer.enhance(1.5)
 
     sharper = ImageEnhance.Sharpness(bright_img)
     sharper_img = sharper.enhance(1.5)
 
     enhanced_image = cv2.cvtColor(np.array(sharper_img), cv2.COLOR_RGB2BGR)
     
-    gray = cv2.cvtColor(image_path, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(enhanced_image, cv2.COLOR_BGR2GRAY)
     binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
     blurred = cv2.GaussianBlur(binary, (5, 5), 0)
 
 
     unsharp_mask = cv2.addWeighted(gray, 2, blurred, -1, 0)
-    # cv2.imwrite('test.jpg', unsharp_mask)
+   
     return unsharp_mask
 
 
