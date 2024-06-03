@@ -29,12 +29,6 @@ def crop_boxes(image, boxes, output_dir):
         x_min, y_min, x_max, y_max = box
         cropped_image = image[y_min:y_max, x_min:x_max]
 
-
-        # this need to go
-        output_path = os.path.join(output_dir, f"cropped_{i}.jpg")
-
-
-        cv2.imwrite(output_path, cropped_image)
         cropped_images.append(cropped_image)
     return cropped_images
 
@@ -65,8 +59,6 @@ def perform_ocr(images):
 
 
 def extract_from_image(image , yolo_boxes):
-    # image = preprocess_image(image)
-    # image = cv2.imread(image)
 
     pixel_boxes = [yolo_to_pixel(image, box) for box in yolo_boxes]
 
