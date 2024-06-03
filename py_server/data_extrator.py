@@ -23,12 +23,11 @@ def safe_get(results, outer_index, inner_index):
         return "no text detected"
 
 
-def crop_boxes(image, boxes, output_dir):
+def crop_boxes(image, boxes):
     cropped_images = []
     for i, box in enumerate(boxes):
         x_min, y_min, x_max, y_max = box
         cropped_image = image[y_min:y_max, x_min:x_max]
-
         cropped_images.append(cropped_image)
     return cropped_images
 
@@ -62,7 +61,6 @@ def extract_from_image(image , yolo_boxes):
 
     pixel_boxes = [yolo_to_pixel(image, box) for box in yolo_boxes]
 
-    dir = r"C:\Users\pc\Desktop\lp BigData\s6\cropped"
-    cropped_images = crop_boxes(image, pixel_boxes, dir)
+    cropped_images = crop_boxes(image, pixel_boxes)
     res = perform_ocr(cropped_images)
     return res

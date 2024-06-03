@@ -8,7 +8,6 @@ old_back = cv2.imread(r'C:\Users\pc\Desktop\lp BigData\s6\card_references\old_ba
 new_front = cv2.imread(r'C:\Users\pc\Desktop\lp BigData\s6\card_references\new_front.jpg', cv2.IMREAD_GRAYSCALE)
 new_back = cv2.imread(r'C:\Users\pc\Desktop\lp BigData\s6\card_references\new_back.jpg', cv2.IMREAD_GRAYSCALE)
 
-# Initialize SIFT detector
 sift = cv2.SIFT_create()
 
 def extract_features(image):
@@ -18,11 +17,9 @@ def extract_features(image):
     return keypoints_list, descriptors_list
 
 
-# Extract features for reference cards
 ref_cards = [old_front, old_back, new_front, new_back]
 ref_features = [extract_features(card) for card in ref_cards]
 
-# Save extracted features to a pickle file
 with open('reference_features.pkl', 'wb') as f:
     pickle.dump(ref_features, f)
 

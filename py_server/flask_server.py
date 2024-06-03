@@ -9,8 +9,6 @@ def CIN_Reader(image):
     cropped_image = crop.crop(image)
     img_type, processed_images=  card_type.classify(cropped_image)
     
-
-
     if img_type == 1:
         dict_res = old_front_cin.old_front_extractor(processed_images)
     elif img_type == 2:
