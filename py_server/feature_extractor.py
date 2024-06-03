@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 import pickle
 
 # Load reference card images
@@ -12,13 +13,16 @@ sift = cv2.SIFT_create()
 
 def extract_features(image):
     keypoints, descriptors = sift.detectAndCompute(image, None)
-    return keypoints, descriptors
+    keypoints_list = [(kp.pt, kp.size, kp.angle, kp.response, kp.octave, kp.class_id) for kp in keypoints]
+    descriptors_list = descriptors.tolist()
+    return keypoints_list, descriptors_list
+
 
 # Extract features for reference cards
 ref_cards = [old_front, old_back, new_front, new_back]
 ref_features = [extract_features(card) for card in ref_cards]
 
-# Save extracted features to a file
+# Save extracted features to a pickle file
 with open('reference_features.pkl', 'wb') as f:
     pickle.dump(ref_features, f)
 
